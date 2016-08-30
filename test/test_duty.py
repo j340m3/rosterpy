@@ -9,7 +9,6 @@ except SystemError:
 import unittest
 from datetime import timedelta
 
-
 class DutyTest(unittest.TestCase):
     def test_init(self):
         d = duty.Duty("1", "01:23:45", "23:45:00")
@@ -28,3 +27,7 @@ class DutyTest(unittest.TestCase):
 
         d2 = duty.Duty("1", "01:00:00", "00:00:00")
         self.assertEqual(d2.getArbeitsdauer(), timedelta(hours=23))
+
+
+if __name__ == '__main__':
+    unittest.main()
