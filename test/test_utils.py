@@ -4,13 +4,15 @@ except SystemError:
     try:
         from context import rosterpy
     except ImportError:
-        from rosterpy import main
+        from rosterpy import utils
 
 import unittest
 
-class ImportTest(unittest.TestCase):
-    def test_res(self):
-        self.assertEqual(3, main.res, "As you may know, imports broken...")
+
+class UtilsTest(unittest.TestCase):
+    def test_pairwise(self):
+        self.assertEqual(list(utils.pairwise(range(3))), [(0, 1), (1, 2)])
+
 
 if __name__ == '__main__':
     unittest.main()
