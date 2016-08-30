@@ -3,7 +3,10 @@ python:
   - "3.3"
   - "3.4"
   - "3.5"
-script: python test/test_basic.py
+install:
+pip install coveralls
+script:
+  coverage run --source=rosterpy test/test_basic.py
 branches:
   only:
     - master
