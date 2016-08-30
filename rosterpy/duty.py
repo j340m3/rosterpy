@@ -3,11 +3,11 @@ import datetime
 from lxml import etree
 
 
-class Dienst:
+class Duty:
     def __init__(self, nummer, beginn, ende):
         self.nummer = nummer
-        self.beginn = datetime.strptime(beginn, "%H:%M:%S")
-        self.ende = datetime.strptime(ende, "%H:%M:%S")
+        self.beginn = datetime.datetime.strptime(beginn, "%H:%M:%S")
+        self.ende = datetime.datetime.strptime(ende, "%H:%M:%S")
 
     def __repr__(self):
         return str(self.nummer)
@@ -26,7 +26,7 @@ class Dienst:
         return datetime.timedelta(seconds=0)
 
 
-class Coupe(Dienst):
+class Coupe(Duty):
     def __init__(self, dienst1, dienst2):
         super(Coupe, self).__init__(dienst1.nummer, dienst1.beginn.strftime("%H:%M:%S"),
                                     dienst2.ende.strftime("%H:%M:%S"))
