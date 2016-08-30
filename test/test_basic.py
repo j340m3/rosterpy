@@ -1,8 +1,19 @@
+
 try:
     from .context import rosterpy
 except SystemError:
-    from context import rosterpy
+    try:
+        from context import rosterpy
+    except ImportError:
+        from rosterpy import main
 
-from rosterpy import main
+import unittest
 
-print(main.res)
+
+class ImportTest(unittest.TestCase):
+    def test_res(self):
+        self.assertEqual(3, main.res, "As you may know, imports broken...")
+
+
+if __name__ == '__main__':
+    unittest.main()
