@@ -7,3 +7,5 @@ script: python test/test_basic.py
 branches:
   only:
     - master
+after_success:
+  - coveralls
