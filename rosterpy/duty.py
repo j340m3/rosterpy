@@ -46,11 +46,11 @@ class DutyInstanceManager:
     def get(self, schulzeit, wochentag, nummer):
         return self._all[schulzeit][wochentag][nummer]
 
-    def allMatches(self, schulzeit, wochentag):
+    def all_matches(self, schulzeit, wochentag):
         return self._all[schulzeit][wochentag].keys()
 
-    def register(self, schulzeit, wochentag, nummer, dienst):
-        self._all[schulzeit][wochentag][nummer] = dienst
+    def register(self, schulzeit, wochentag, dienst):
+        self._all[schulzeit][wochentag][dienst.nummer] = dienst
 
     def import_duties(self, file):
         if self._dii is None:

@@ -62,6 +62,20 @@ class DutyInstanceManagerTest(unittest.TestCase):
 
     def test_register(self):
         dim = duty.DutyInstanceManager()
-        dim.register()
+        with self.assertRaises(KeyError):
+            res = dim.get(True, 1, 1)
+        d = duty.Duty("1", "01:00:00", "00:00:00")
+        dim.register(True, 1, d)
+        self.assertEqual(d, dim.get(True, 1, d.nummer))
+
+    def test_all_matches(self):
+        dim = duty.DutyInstanceManager()
+        duties = [duty.Duty(str(nr), "01:00:00", "00:00:00") for nr in range(4)]
+        for d in duties:
+            dim.register(True, 1, d)
+        self.assertEqual(len(dim.all_matches(True, 1)), 4)
+        for d in duties:
+            self.assertIn(d.nummer, dim.all_matches(True, 1))
+
 if __name__ == '__main__':
     unittest.main()
