@@ -55,5 +55,13 @@ class CoupeTest(unittest.TestCase):
         c1 = duty.Coupe(d1, d2)
         self.assertEqual(c1.getPause(), timedelta(hours=2))
 
+
+class DutyInstanceManagerTest(unittest.TestCase):
+    def test_init(self):
+        dim = duty.DutyInstanceManager()
+
+    def test_register(self):
+        dim = duty.DutyInstanceManager()
+        dim.register()
 if __name__ == '__main__':
     unittest.main()

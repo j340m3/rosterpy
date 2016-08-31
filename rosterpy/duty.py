@@ -1,5 +1,6 @@
 import datetime
 
+
 class Duty:
     def __init__(self, nummer, beginn, ende):
         self.nummer = nummer
@@ -37,7 +38,7 @@ class Coupe(Duty):
         return self.dienst2.beginn - self.dienst1.ende + self.dienst1.getPause() + self.dienst2.getPause()
 
 
-class DienstManager:
+class DutyInstanceManager:
     def __init__(self, file=None):
         self._all = {x: {y: {} for y in range(7)} for x in [True, False]}
         self._dii = None
