@@ -1,8 +1,5 @@
 import datetime
 
-from lxml import etree
-
-
 class Duty:
     def __init__(self, nummer, beginn, ende):
         self.nummer = nummer
@@ -42,34 +39,53 @@ class Coupe(Duty):
 
 class DienstManager:
     def __init__(self, file=None):
-        wda = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
-        self.__all = {x: {y: {} for y in range(7)} for x in [True, False]}
-        if file is not None:
-            tree = etree.parse(file)
-            for i in tree.getroot().iterchildren():
-                if i.tag == "dienst":
-                    x = {}
-                    for j in i.iterchildren():
-                        if j.tag == "wochentage":
-                            wochentage = [k.text.strip() for k in j.iterchildren()]
-                        elif j.tag == "schulzeit":
-                            schulzeit = j.text.strip() in ["true", "True"]
-                        else:
-                            x[j.tag] = j.text.strip()
-                    for wochentag in wochentage:
-                        if str(int(x["nummer"]) - 50) in self.__all[schulzeit][wda.index(wochentag)].keys():
-                            first = self.__all[schulzeit][wda.index(wochentag)][str(int(x["nummer"]) - 50)]
-                            second = Duty(**x)
-                            self.__all[schulzeit][wda.index(wochentag)][str(int(x["nummer"]) - 50)] = Coupe(first,
-                                                                                                            second)
-                        else:
-                            self.__all[schulzeit][wda.index(wochentag)][x["nummer"].strip()] = Duty(**x)
+        self._all = {x: {y: {} for y in range(7)} for x in [True, False]}
+        self._dii = None
 
     def get(self, schulzeit, wochentag, nummer):
-        return self.__all[schulzeit][wochentag][nummer]
+        return self._all[schulzeit][wochentag][nummer]
 
     def allMatches(self, schulzeit, wochentag):
-        return self.__all[schulzeit][wochentag].keys()
+        return self._all[schulzeit][wochentag].keys()
 
-    def set(self, schulzeit, wochentag, nummer, dienst):
-        self.__all[schulzeit][wochentag][nummer] = dienst
+    def register(self, schulzeit, wochentag, nummer, dienst):
+        self._all[schulzeit][wochentag][nummer] = dienst
+
+    def import_duties(self, file):
+        if self._dii is None:
+            self._dii = DutyInstanceImporter()
+        for schulzeit, wochentag, nummer, dienst in self._dii.import_duties(file):
+            self.register(schulzeit, wochentag, nummer, dienst)
+
+
+class DutyInstanceImporter:
+    def __init__(self):
+        self._wda = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+
+    def import_duties(self, file):
+        if file is not None:
+            if file.endswith(".xml"):
+                return self._xml_import(file)
+            elif file.endswith((".yml", ".yaml")):
+                return self._yml_import(file)
+
+    def _xml_import(self, file):
+        from lxml import etree
+        tree = etree.parse(file)
+        for i in tree.getroot().iterchildren():
+            if i.tag == "dienst":
+                x = {}
+                wochentage = []
+                schulzeit = None
+                for j in i.iterchildren():
+                    if j.tag == "wochentage":
+                        wochentage = [k.text.strip() for k in j.iterchildren()]
+                    elif j.tag == "schulzeit":
+                        schulzeit = j.text.strip() in ["true", "True"]
+                    else:
+                        x[j.tag] = j.text.strip()
+                for wochentag in wochentage:
+                    yield (schulzeit, self._wda.index(wochentag), x["nummer"].strip(), Duty(**x))
+
+    def _yml_import(self, file):
+        pass
