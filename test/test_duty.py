@@ -84,14 +84,12 @@ class DutyInstanceManagerTest(unittest.TestCase):
         with self.assertRaises(duty.FileEndingNotKnownException):
             dim.import_duties("ngfunlegf.glnveflng")
 
-    # @unittest.skip(
-    #        "TODO: Breaks os travis with: OSError: Error reading file 'duty.xml': failed to load external entity")
     def test_import_xml(self):
         dim = duty.DutyInstanceManager()
-        with self.assertRaises(OSError):
-            import os
-            print(os.listdir("."))
+        try:
             dim.import_duties("test/duty.xml")
+        except OSError:
+            dim.import_duties("duty.xml")
 
 if __name__ == '__main__':
     unittest.main()
