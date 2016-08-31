@@ -67,8 +67,8 @@ class DutyInstanceImporter:
         if file is not None:
             if file.endswith(".xml"):
                 return self._xml_import(file)
-            elif file.endswith((".yml", ".yaml")):
-                return self._yml_import(file)
+            elif file.endswith(".json"):
+                return self._json_import(file)
             else:
                 raise FileEndingNotKnownException
     def _xml_import(self, file):
@@ -89,8 +89,10 @@ class DutyInstanceImporter:
                 for wochentag in wochentage:
                     yield (schulzeit, self._wda.index(wochentag), Duty(**x))
 
-    def _yml_import(self, file):
-        return []
+    def _json_import(self, file):
+        import tinydb
+        with tinydb.TinyDB("duty.json") as db:
+            return [Duty(**i) for i in db.all()]
 
 
 class FileEndingNotKnownException(Exception):
