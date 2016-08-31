@@ -56,7 +56,7 @@ class DutyInstanceManager:
         if self._dii is None:
             self._dii = DutyInstanceImporter()
         for schulzeit, wochentag, nummer, dienst in self._dii.import_duties(file):
-            self.register(schulzeit, wochentag, nummer, dienst)
+            self.register(schulzeit, wochentag, nummer)
 
 
 class DutyInstanceImporter:
@@ -69,7 +69,8 @@ class DutyInstanceImporter:
                 return self._xml_import(file)
             elif file.endswith((".yml", ".yaml")):
                 return self._yml_import(file)
-
+            else:
+                raise FileEndingNotKnownException
     def _xml_import(self, file):
         from lxml import etree
         tree = etree.parse(file)
@@ -89,4 +90,8 @@ class DutyInstanceImporter:
                     yield (schulzeit, self._wda.index(wochentag), x["nummer"].strip(), Duty(**x))
 
     def _yml_import(self, file):
-        pass
+        return []
+
+
+class FileEndingNotKnownException(Exception):
+    pass

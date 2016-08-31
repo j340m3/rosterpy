@@ -77,5 +77,12 @@ class DutyInstanceManagerTest(unittest.TestCase):
         for d in duties:
             self.assertIn(d.nummer, dim.all_matches(True, 1))
 
+    def test_import_yml(self):
+        dim = duty.DutyInstanceManager()
+        dim.import_duties("not_present.yml")
+        dim.import_duties("not_present.yaml")
+        with self.assertRaises(duty.FileEndingNotKnownException):
+            dim.import_duties("ngfunlegf.glnveflng")
+
 if __name__ == '__main__':
     unittest.main()
