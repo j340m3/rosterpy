@@ -37,7 +37,7 @@ class Coupe(Duty):
         return (self.dienst1.ende - self.dienst1.beginn) + (self.dienst2.ende - self.dienst2.beginn)
 
     def getPause(self):
-        return self.dienst2.beginn - self.dienst1.ende
+        return self.dienst2.beginn - self.dienst1.ende + self.dienst1.getPause() + self.dienst2.getPause()
 
 
 class DienstManager:
@@ -59,11 +59,11 @@ class DienstManager:
                     for wochentag in wochentage:
                         if str(int(x["nummer"]) - 50) in self.__all[schulzeit][wda.index(wochentag)].keys():
                             first = self.__all[schulzeit][wda.index(wochentag)][str(int(x["nummer"]) - 50)]
-                            second = Dienst(**x)
+                            second = Duty(**x)
                             self.__all[schulzeit][wda.index(wochentag)][str(int(x["nummer"]) - 50)] = Coupe(first,
                                                                                                             second)
                         else:
-                            self.__all[schulzeit][wda.index(wochentag)][x["nummer"].strip()] = Dienst(**x)
+                            self.__all[schulzeit][wda.index(wochentag)][x["nummer"].strip()] = Duty(**x)
 
     def get(self, schulzeit, wochentag, nummer):
         return self.__all[schulzeit][wochentag][nummer]

@@ -9,6 +9,7 @@ except SystemError:
 import unittest
 from datetime import timedelta
 
+
 class DutyTest(unittest.TestCase):
     def test_init(self):
         d = duty.Duty("1", "01:23:45", "23:45:00")
@@ -28,6 +29,31 @@ class DutyTest(unittest.TestCase):
         d2 = duty.Duty("1", "01:00:00", "00:00:00")
         self.assertEqual(d2.getArbeitsdauer(), timedelta(hours=23))
 
+        d3 = duty.Duty("1", "14:00:00", "01:00:00")
+        self.assertEqual(d3.getArbeitsdauer(), timedelta(hours=11))
+
+    def test_get_pause(self):
+        d = duty.Duty("1", "01:00:00", "00:00:00")
+        self.assertEqual(d.getPause(), timedelta())
+
+
+class CoupeTest(unittest.TestCase):
+    def test_init(self):
+        d1 = duty.Duty("1", "09:00:00", "11:00:00")
+        d2 = duty.Duty("1", "13:00:00", "16:00:00")
+        c1 = duty.Coupe(d1, d2)
+
+    def test_get_worktime(self):
+        d1 = duty.Duty("1", "09:00:00", "11:00:00")
+        d2 = duty.Duty("1", "13:00:00", "16:00:00")
+        c1 = duty.Coupe(d1, d2)
+        self.assertEqual(c1.getArbeitsdauer(), timedelta(hours=5))
+
+    def test_get_pause(self):
+        d1 = duty.Duty("1", "09:00:00", "11:00:00")
+        d2 = duty.Duty("1", "13:00:00", "16:00:00")
+        c1 = duty.Coupe(d1, d2)
+        self.assertEqual(c1.getPause(), timedelta(hours=2))
 
 if __name__ == '__main__':
     unittest.main()
