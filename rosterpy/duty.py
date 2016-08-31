@@ -91,7 +91,7 @@ class DutyInstanceImporter:
 
     def _json_import(self, file):
         import tinydb
-        with tinydb.TinyDB("duty.json") as db:
+        with tinydb.TinyDB(file) as db:
             return [Duty(**i) for i in db.all()]
 
 

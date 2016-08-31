@@ -79,7 +79,10 @@ class DutyInstanceManagerTest(unittest.TestCase):
 
     def test_import_json(self):
         dim = duty.DutyInstanceManager()
-        dim.import_duties("not_present.json")
+        try:
+            dim.import_duties("test/duty.json")
+        except OSError:
+            dim.import_duties("duty.json")
         with self.assertRaises(duty.FileEndingNotKnownException):
             dim.import_duties("ngfunlegf.glnveflng")
 
