@@ -55,8 +55,8 @@ class DutyInstanceManager:
     def import_duties(self, file):
         if self._dii is None:
             self._dii = DutyInstanceImporter()
-        for schulzeit, wochentag, nummer, dienst in self._dii.import_duties(file):
-            self.register(schulzeit, wochentag, nummer)
+        for schulzeit, wochentag, dienst in self._dii.import_duties(file):
+            self.register(schulzeit, wochentag, dienst)
 
 
 class DutyInstanceImporter:
@@ -87,7 +87,7 @@ class DutyInstanceImporter:
                     else:
                         x[j.tag] = j.text.strip()
                 for wochentag in wochentage:
-                    yield (schulzeit, self._wda.index(wochentag), x["nummer"].strip(), Duty(**x))
+                    yield (schulzeit, self._wda.index(wochentag), Duty(**x))
 
     def _yml_import(self, file):
         return []

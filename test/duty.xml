@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dienste>
+    <dienst>
+        <nummer>1</nummer>
+        <beginn>14:50:00</beginn>
+        <ende>23:47:00</ende>
+        <schulzeit>false</schulzeit>
+        <wochentage>
+            <wochentag>Montag</wochentag>
+            <wochentag>Dienstag</wochentag>
+            <wochentag>Mittwoch</wochentag>
+            <wochentag>Donnerstag</wochentag>
+            <wochentag>Freitag</wochentag>
+        </wochentage>
+    </dienst>
+</dienste>

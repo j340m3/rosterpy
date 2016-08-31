@@ -84,5 +84,9 @@ class DutyInstanceManagerTest(unittest.TestCase):
         with self.assertRaises(duty.FileEndingNotKnownException):
             dim.import_duties("ngfunlegf.glnveflng")
 
+    def test_import_xml(self):
+        dim = duty.DutyInstanceManager()
+        dim.import_duties("duty.xml")
+
 if __name__ == '__main__':
     unittest.main()
