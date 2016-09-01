@@ -18,7 +18,8 @@ class Driver:
                     self.preferences[tag] = []
                 self.preferences[tag].append(preference)
 
-    def getPreference(self, date):
+    def getPreference(self, datum):
+        date = datetime.datetime.strptime(datum, '%d.%m.%Y').date()
         if date not in self.preferences:
             return rosterpy.preference.Preference()
         return self.preferences[date]

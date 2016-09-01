@@ -22,6 +22,11 @@ class DriverTest(unittest.TestCase):
         p2 = preference.IllPreference("15.11.2011", "18.11.2011")
         d = driver.Driver("B", "A", [p2])
 
+    def test_get_preference(self):
+        p = preference.IllPreference("15.11.2011", "18.11.2011")
+        d = driver.Driver("B", "A", [p])
+        self.assertIn(p, d.getPreference("16.11.2011"))
+
 class RoulementTest(unittest.TestCase):
     def test_init(self):
         d = driver.Roulement(6, "22.07.2014")
