@@ -16,8 +16,6 @@ class DriverTest(unittest.TestCase):
         self.assertEqual(d.vorname, "A")
 
 
-class RoulementDriverTest(unittest.TestCase):
+class RoulementTest(unittest.TestCase):
     def test_init(self):
-        d = driver.RoulementDriver("B", "A")
-        self.assertEqual(d.nachname, "B")
-        self.assertEqual(d.vorname, "A")
+        d = driver.Roulement(6, "22.07.2014")

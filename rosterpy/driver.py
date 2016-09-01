@@ -10,6 +10,7 @@ class Driver:
         self.nachname = nachname
         self.vorname = vorname
         self.preferences = {}
+        self.roulement = None
         for preference in preferences:
             for tag_shift in range((preference.ende - preference.beginn).days + 1):
                 tag = (preference.beginn + datetime.timedelta(days=tag_shift))
@@ -26,9 +27,42 @@ class Driver:
         return self.__class__.__name__ + " " * (7 - len(self.__class__.__name__)) + self.nachname + ", " + self.vorname
 
 
-class RoulementDriver(Driver):
+class Roulement:
+    def __init__(self, amount, date):
+        self._amount = amount
+        self._date = date
+        self._driver = {i: None for i in range(amount)}
+
+    def bind(self, driver, pos):
+        if pos < self._amount:
+            if self._driver[pos] is None:
+                if driver.roulement is None:
+                    driver.roulement = self
+                    self._driver[pos] = driver
+                else:
+                    raise RoulementDriverAlreadyAssignedException()
+            else:
+                raise RoulementPositionAlreadyAssignedException()
+        else:
+            raise InvalidRoulementPositionException()
+
+    def unbind(self, driver):
+        if driver in self._driver.values():
+            pos = list(self._driver.keys())[list(self._driver.values()).index(driver)]
+            self._driver[pos] = None
+            driver.roulement = None
+
+
+class InvalidRoulementPositionException(Exception):
     pass
 
+
+class RoulementPositionAlreadyAssignedException(Exception):
+    pass
+
+
+class RoulementDriverAlreadyAssignedException(Exception):
+    pass
 
 class FahrerInstanceManager:
     def __init__(self, file=None):
