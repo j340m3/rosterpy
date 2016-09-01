@@ -121,15 +121,13 @@ class DriverInstanceImporter:
                             kwargs = {}
                             for l in k.iterchildren():
                                 if l.tag.strip() == "policy":
+                                    pref = None
                                     if l.text.strip() == "krank":
                                         pref = rosterpy.preference.IllPreference
-                                    elif l.text.strip() == "roulement":
-                                        pref = rosterpy.preference.RoulementPreference
-                                    else:
-                                        pref = rosterpy.preference.Preference
                                 else:
                                     kwargs[l.tag] = l.text.strip()
-                            x["preferences"].append(pref(**kwargs))
+                            if pref is not None:
+                                x["preferences"].append(pref(**kwargs))
                     else:
                         x[j.tag] = j.text.strip()
                 yield Driver(**x)
