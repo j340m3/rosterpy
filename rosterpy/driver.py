@@ -28,13 +28,16 @@ class Driver:
 
 
 class Roulement:
-    def __init__(self, amount, date):
-        self._amount = amount
-        self._date = date
-        self._driver = {i: None for i in range(amount)}
+    def __init__(self, date, duties, drivers=None):
+        self.date = date
+        self._driver = {i: None for i in range(len(duties))}
+        self.duties = duties
+        if drivers is not None:
+            for index, driver in enumerate(drivers):
+                self.bind(driver, index)
 
     def bind(self, driver, pos):
-        if pos < self._amount:
+        if pos < len(self.duties):
             if self._driver[pos] is None:
                 if driver.roulement is None:
                     driver.roulement = self
@@ -48,9 +51,15 @@ class Roulement:
 
     def unbind(self, driver):
         if driver in self._driver.values():
-            pos = list(self._driver.keys())[list(self._driver.values()).index(driver)]
+            pos = self._get_driver_pos(driver)
             self._driver[pos] = None
             driver.roulement = None
+
+    def _get_driver_pos(self, driver):
+        return list(self._driver.keys())[list(self._driver.values()).index(driver)]
+
+    def get_duty(self, driver, date):
+        return ((date - self.date).days + self._get_driver_pos(driver)) % len(self.duties)
 
 
 class InvalidRoulementPositionException(Exception):

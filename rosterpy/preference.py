@@ -11,14 +11,13 @@ class Preference:
 
 
 class RoulementPreference(Preference):
-    def __init__(self, index, top, date):
+    def __init__(self, roulement, driver):
         super(RoulementPreference, self).__init__()
-        self.index = index
-        self.top = top
-        self.date = date
+        self.roulement = roulement
+        self.driver = driver
 
     def getUsefullness(self, dienst, datum, verlauf={}):
-        if dienst.nummer == ((datum - self.date).days + self.index) % self.top:
+        if self.roulement.get_duty(self.driver, datum) == dienst:
             return 1.0
         return 0.0
 
