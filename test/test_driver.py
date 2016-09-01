@@ -44,3 +44,18 @@ class RoulementTest(unittest.TestCase):
             dr.bind(d1, 1)
         with self.assertRaises(driver.RoulementPositionAlreadyAssignedException):
             dr.bind(d2, 0)
+        dr2 = driver.Roulement("01.02.1993", [duty.Duty("2", "01:23:45", "23:45:00")])
+        with self.assertRaises(driver.RoulementDriverAlreadyAssignedException):
+            dr2.bind(d1, 0)
+
+    def test_unbind(self):
+        d1 = driver.Driver("B", "A")
+        d2 = driver.Driver("C", "D")
+        du = duty.Duty("1", "01:23:45", "23:45:00")
+        dr = driver.Roulement("22.07.2014", [du])
+        dr.bind(d1, 0)
+        self.assertEqual(d1.roulement, dr)
+        self.assertIn(d1, dr._driver.values())
+        dr.unbind(d1)
+        self.assertEqual(d1.roulement, None)
+        self.assertNotIn(d1, dr._driver.values())
