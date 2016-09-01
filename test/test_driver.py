@@ -59,3 +59,14 @@ class RoulementTest(unittest.TestCase):
         dr.unbind(d1)
         self.assertEqual(d1.roulement, None)
         self.assertNotIn(d1, dr._driver.values())
+
+
+class DriverInstanceManagerTest(unittest.TestCase):
+    def test_init(self):
+        d = driver.DriverInstanceManager()
+        d1 = driver.Driver("B", "A")
+        d2 = driver.Driver("C", "D")
+        d.add(d1)
+        d.add(d2)
+        for i, dr in enumerate(d):
+            self.assertEqual(d.getAll()[i], dr)

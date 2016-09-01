@@ -2,6 +2,7 @@ import datetime
 
 from lxml import etree
 
+import rosterpy.duty
 import rosterpy.preference
 
 
@@ -77,38 +78,58 @@ class RoulementPositionAlreadyAssignedException(Exception):
 class RoulementDriverAlreadyAssignedException(Exception):
     pass
 
-class FahrerInstanceManager:
-    def __init__(self, file=None):
-        self.__all = []
-        if file is not None:
-            tree = etree.parse(file)
-            for i in tree.getroot().iterchildren():
-                if i.tag == "fahrer":
-                    x = {"preferences": []}
-                    for j in i.iterchildren():
-                        if j.tag == "preferences":
-                            for k in j.iterchildren():
-                                kwargs = {}
-                                for l in k.iterchildren():
-                                    if l.tag.strip() == "policy":
-                                        if l.text.strip() == "krank":
-                                            pref = rosterpy.preference.KrankPreference
-                                        elif l.text.strip() == "roulement":
-                                            pref = rosterpy.preference.RoulementPreference
-                                        else:
-                                            pref = rosterpy.preference.Preference
-                                    else:
-                                        kwargs[l.tag] = l.text.strip()
-                                x["preferences"].append(pref(**kwargs))
-                        else:
-                            x[j.tag] = j.text.strip()
-                    self.__all.append(Driver(**x))
+
+class DriverInstanceManager:
+    def __init__(self):
+        self._all = []
+        self._dii = None
 
     def __iter__(self):
-        return iter(self.__all)
+        return iter(self._all)
 
-    def getAll(self, tag):
-        return self.__all.copy()
+    def getAll(self):
+        return self._all.copy()
 
     def add(self, fahrer):
-        self.__all.append(fahrer)
+        self._all.append(fahrer)
+
+    def import_drivers(self, file):
+        if self._dii is None:
+            self._dii = DriverInstanceImporter()
+        for fahrer in self._dii.import_drivers(file):
+            self.add(fahrer)
+
+
+class DriverInstanceImporter:
+    def import_drivers(self, file):
+        if file is not None:
+            if file.endswith(".xml"):
+                return self._xml_import(file)
+            elif file.endswith(".json"):
+                return self._json_import(file)
+            else:
+                raise rosterpy.duty.FileEndingNotKnownException
+
+    def _xml_import(self, file):
+        tree = etree.parse(file)
+        for i in tree.getroot().iterchildren():
+            if i.tag == "fahrer":
+                x = {"preferences": []}
+                for j in i.iterchildren():
+                    if j.tag == "preferences":
+                        for k in j.iterchildren():
+                            kwargs = {}
+                            for l in k.iterchildren():
+                                if l.tag.strip() == "policy":
+                                    if l.text.strip() == "krank":
+                                        pref = rosterpy.preference.KrankPreference
+                                    elif l.text.strip() == "roulement":
+                                        pref = rosterpy.preference.RoulementPreference
+                                    else:
+                                        pref = rosterpy.preference.Preference
+                                else:
+                                    kwargs[l.tag] = l.text.strip()
+                            x["preferences"].append(pref(**kwargs))
+                    else:
+                        x[j.tag] = j.text.strip()
+                yield Driver(**x)
