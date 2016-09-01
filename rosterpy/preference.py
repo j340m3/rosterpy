@@ -2,12 +2,8 @@ import datetime
 
 
 class Preference:
-    def getUsefullness(self, dienst, datum, verlauf={}):
-        if dienst.ende < dienst.beginn:
-            return (0)
-        return 1 - (dienst.ende - datetime.datetime.strptime("00:00:00",
-                                                             "%H:%M:%S")).total_seconds() / datetime.timedelta(
-                days=1).total_seconds()
+    def get_usefullness(self, dienst, datum, verlauf={}):
+        return 0
 
 
 class RoulementPreference(Preference):
@@ -16,10 +12,14 @@ class RoulementPreference(Preference):
         self.roulement = roulement
         self.driver = driver
 
-    def getUsefullness(self, dienst, datum, verlauf={}):
-        if self.roulement.get_duty(self.driver, datum) == dienst:
+    def get_usefullness(self, dienst, datum, verlauf={}):
+        if self.roulement.get_duty(self.driver, datum) is dienst:
             return 1.0
-        return 0.0
+        raise RoulementException
+
+
+class RoulementException(Exception):
+    pass
 
 
 class IllPreference(Preference):
@@ -27,11 +27,11 @@ class IllPreference(Preference):
         self.beginn = datetime.datetime.strptime(beginn, '%d.%m.%Y').date()
         self.ende = datetime.datetime.strptime(ende, '%d.%m.%Y').date()
 
-    def getUsefullness(self, dienst, datum, verlauf={}):
+    def get_usefullness(self, dienst, datum, verlauf={}):
         if dienst in ["CC", "CR"] and datum <= self.ende and datum >= self.beginn:
             return 1.0
-        raise WrongPreferenceException()
+        raise IllException()
 
 
-class WrongPreferenceException(Exception):
+class IllException(Exception):
     pass

@@ -29,4 +29,17 @@ class DriverTest(unittest.TestCase):
 
 class RoulementTest(unittest.TestCase):
     def test_init(self):
-        d = driver.Roulement(6, "22.07.2014")
+        du = duty.Duty("1", "01:23:45", "23:45:00")
+        dr = driver.Roulement("22.07.2014", [du])
+
+    def test_bind(self):
+        d1 = driver.Driver("B", "A")
+        d2 = driver.Driver("C", "D")
+        du = duty.Duty("1", "01:23:45", "23:45:00")
+        dr = driver.Roulement("22.07.2014", [du])
+        dr.bind(d1, 0)
+        dr.bind(d1, 0)
+        with self.assertRaises(driver.InvalidRoulementPositionException):
+            dr.bind(d1, 1)
+        with self.assertRaises(driver.RoulementPositionAlreadyAssignedException):
+            dr.bind(d2, 0)

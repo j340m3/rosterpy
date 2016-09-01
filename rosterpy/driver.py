@@ -46,7 +46,8 @@ class Roulement:
                 else:
                     raise RoulementDriverAlreadyAssignedException()
             else:
-                raise RoulementPositionAlreadyAssignedException()
+                if not self._driver[pos] == driver:
+                    raise RoulementPositionAlreadyAssignedException()
         else:
             raise InvalidRoulementPositionException()
 
