@@ -1,9 +1,11 @@
 import datetime
 
-import preference
+from lxml import etree
+
+import rosterpy.preference
 
 
-class Fahrer:
+class Driver:
     def __init__(self, nachname, vorname, preferences=[]):
         self.nachname = nachname
         self.vorname = vorname
@@ -11,25 +13,20 @@ class Fahrer:
         for preference in preferences:
             for tag_shift in range((preference.ende - preference.beginn).days + 1):
                 tag = (preference.beginn + datetime.timedelta(days=tag_shift))
-                self.preferences[tag] = preference
-
-    def getTageInFolgeGearbeitet(self, datum):
-        for i in range(7):
-            act = datum - datetime.timedelta(days=i)
-            if act in dienste and dienste[act] in ["CC", "CR"]:
-                return i
-        return 0
+                if tag not in self.preferences:
+                    self.preferences[tag] = []
+                self.preferences[tag].append(preference)
 
     def getPreference(self, date):
         if date not in self.preferences:
-            return preference.Preference()
+            return rosterpy.preference.Preference()
         return self.preferences[date]
 
     def __repr__(self):
         return self.__class__.__name__ + " " * (7 - len(self.__class__.__name__)) + self.nachname + ", " + self.vorname
 
 
-class RoulementFahrer(Fahrer):
+class RoulementDriver(Driver):
     pass
 
 
@@ -48,17 +45,17 @@ class FahrerInstanceManager:
                                 for l in k.iterchildren():
                                     if l.tag.strip() == "policy":
                                         if l.text.strip() == "krank":
-                                            pref = preference.KrankPreference
+                                            pref = rosterpy.preference.KrankPreference
                                         elif l.text.strip() == "roulement":
-                                            pref = preference.RoulementPreference
+                                            pref = rosterpy.preference.RoulementPreference
                                         else:
-                                            pref = preference.Preference
+                                            pref = rosterpy.preference.Preference
                                     else:
                                         kwargs[l.tag] = l.text.strip()
                                 x["preferences"].append(pref(**kwargs))
                         else:
                             x[j.tag] = j.text.strip()
-                    self.__all.append(Fahrer(**x))
+                    self.__all.append(Driver(**x))
 
     def __iter__(self):
         return iter(self.__all)

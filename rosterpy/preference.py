@@ -2,9 +2,6 @@ import datetime
 
 
 class Preference:
-    def __init__(self):
-        pass
-
     def getUsefullness(self, dienst, datum, verlauf={}):
         if dienst.ende < dienst.beginn:
             return (0)
@@ -26,7 +23,7 @@ class RoulementPreference(Preference):
         return 0.0
 
 
-class KrankPreference(Preference):
+class IllPreference(Preference):
     def __init__(self, beginn, ende):
         self.beginn = datetime.datetime.strptime(beginn, '%d.%m.%Y').date()
         self.ende = datetime.datetime.strptime(ende, '%d.%m.%Y').date()
