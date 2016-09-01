@@ -26,6 +26,7 @@ class DriverTest(unittest.TestCase):
         p = preference.IllPreference("15.11.2011", "18.11.2011")
         d = driver.Driver("B", "A", [p])
         self.assertIn(p, d.getPreference("16.11.2011"))
+        self.assertEqual(preference.Preference(), d.getPreference("16.11.2012"))
 
 class RoulementTest(unittest.TestCase):
     def test_init(self):
