@@ -70,3 +70,19 @@ class DriverInstanceManagerTest(unittest.TestCase):
         d.add(d2)
         for i, dr in enumerate(d):
             self.assertEqual(d.getAll()[i], dr)
+
+    def test_import_json(self):
+        dim = driver.DriverInstanceManager()
+        try:
+            dim.import_drivers("test/driver.json")
+        except OSError:
+            dim.import_drivers("driver.json")
+        with self.assertRaises(duty.FileEndingNotKnownException):
+            dim.import_drivers("ngfunlegf.glnveflng")
+
+    def test_import_xml(self):
+        dim = driver.DriverInstanceManager()
+        try:
+            dim.import_drivers("test/driver.xml")
+        except OSError:
+            dim.import_drivers("driver.xml")

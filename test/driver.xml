@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<fahrerListe>
+    <fahrer>
+        <vorname>Alain</vorname>
+        <nachname>Offermann</nachname>
+        <preferences>
+            <preference>
+                <policy>krank</policy>
+                <beginn>03.06.2010</beginn>
+                <ende>07.06.2010</ende>
+            </preference>
+        </preferences>
+    </fahrer>
+</fahrerListe>

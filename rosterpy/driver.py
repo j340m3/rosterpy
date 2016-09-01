@@ -122,7 +122,7 @@ class DriverInstanceImporter:
                             for l in k.iterchildren():
                                 if l.tag.strip() == "policy":
                                     if l.text.strip() == "krank":
-                                        pref = rosterpy.preference.KrankPreference
+                                        pref = rosterpy.preference.IllPreference
                                     elif l.text.strip() == "roulement":
                                         pref = rosterpy.preference.RoulementPreference
                                     else:
@@ -133,3 +133,8 @@ class DriverInstanceImporter:
                     else:
                         x[j.tag] = j.text.strip()
                 yield Driver(**x)
+
+    def _json_import(self, file):
+        import tinydb
+        with tinydb.TinyDB(file) as db:
+            return [Driver(**i) for i in db.all()]
