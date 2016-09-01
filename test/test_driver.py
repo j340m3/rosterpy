@@ -28,6 +28,10 @@ class DriverTest(unittest.TestCase):
         self.assertIn(p, d.getPreference("16.11.2011"))
         self.assertEqual(preference.Preference(), d.getPreference("16.11.2012"))
 
+    def test_repr(self):
+        d = driver.Driver("B", "A")
+        self.assertEqual(d.__repr__(), "Driver B, A")
+
 class RoulementTest(unittest.TestCase):
     def test_init(self):
         du = duty.Duty("1", "01:23:45", "23:45:00")
