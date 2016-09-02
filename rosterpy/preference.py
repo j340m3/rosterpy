@@ -41,3 +41,9 @@ class IllPreference:
 
 class IllException(Exception):
     pass
+
+
+class StatisticalPreference:
+    def __init__(self, keys, calendar):
+        self.keys = keys
+        self.calendar = calendar
